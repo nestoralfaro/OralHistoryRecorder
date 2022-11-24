@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage.Streams;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -13,6 +15,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -23,16 +26,44 @@ namespace OralHistoryRecorder
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        AudioRecorderLib _audioRecorder;
+        AudioRecorderLib audioRecorder;
+
+        private DispatcherTimer dispatcherTimer, demoDispatcher;
+        private DateTime startedTime;
+        private TimeSpan timePassed, timeSinceLastStop;
+        bool isStop = false;
+
         public MainPage()
         {
-            this.InitializeComponent();
-            this._audioRecorder = new AudioRecorderLib();
+            InitializeComponent();
+            audioRecorder = new AudioRecorderLib();
         }
 
-        private void btnRecord_Click(object sender, RoutedEventArgs e)
+        private async void btnRecord_Click(object sender, RoutedEventArgs e)
         {
-            this._audioRecorder.Record();
+
+            if (isStop == false)
+            {
+                isStop = true;
+                startedTime = DateTime.Now;
+                DispatcherTimerSetup();
+                btnRecord.Content = "Stop";
+                await audioRecorder.Record();
+            }
+            else
+            {
+                isStop = false;
+                dispatcherTimer.Stop();
+                demoDispatcher.Stop();
+                timeText.Text = "00:00:00:000";
+                btnRecord.Content = "Start";
+                await audioRecorder.StopRecording();
+
+
+
+
+            }
+
         }
 
         //private void btnPlay_Click(object sender, RoutedEventArgs e)
@@ -42,12 +73,71 @@ namespace OralHistoryRecorder
 
         private async void btnPlay_Click(object sender, RoutedEventArgs e)
         {
-            await this._audioRecorder.PlayFromDisk(Dispatcher);
+            await audioRecorder.PlayFromDisk(Dispatcher);
         }
 
-        private void btnStopRecording_Click(object sender, RoutedEventArgs e)
+        private void DispatcherTimerSetup()
         {
-            this._audioRecorder.StopRecording();
+            dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
+            dispatcherTimer.Start();
+
+            timeSinceLastStop = TimeSpan.Zero;
+            timeText.Text = "00:00:00:000";
+            demoDispatcher = new DispatcherTimer();
+            demoDispatcher.Tick += DemoDispatcher_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
+            demoDispatcher.Start();
+        }
+
+        private void enterTagButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            string curDir = Directory.GetCurrentDirectory();
+
+            var tfile = TagLib.File.Create(curDir + "\\NewRecording.mp3");
+            string title = tfile.Tag.Title;
+            TimeSpan duration = tfile.Properties.Duration;
+            Debug.WriteLine("Title: {0}, duration: {1}", title, duration);
+
+            // change title in the file
+            tfile.Tag.Title = "done with taglibsharp";
+            tfile.Save();
+        }
+
+        private string MakeDigitString(int number, int count)
+        {
+            string result = "0";
+            if (count == 2)
+            {
+                if (number < 10)
+                {
+                    result = "0" + number;
+                }
+                else
+                {
+                    result = number.ToString();
+                }
+            }
+            else if (count == 3)
+            {
+                if (number < 10)
+                    result = "00" + number;
+                else if (number > 9 && number < 100)
+                    result = "0" + number;
+                else
+                    result = number.ToString();
+            }
+            return result;
+        }
+
+        private void DemoDispatcher_Tick(object sender, object e)
+        {
+            timePassed = DateTime.Now - startedTime;
+            timeText.Text = MakeDigitString((timeSinceLastStop + timePassed).Hours, 2) + ":"
+                + MakeDigitString((timeSinceLastStop + timePassed).Minutes, 2) + ":"
+                + MakeDigitString((timeSinceLastStop + timePassed).Seconds, 2) + ":"
+                + MakeDigitString((timeSinceLastStop + timePassed).Milliseconds, 3);
         }
     }
 }

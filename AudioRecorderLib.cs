@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.Devices.Radios;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
@@ -18,11 +20,12 @@ namespace OralHistoryRecorder
         private string DEFAULT_AUDIO_FILENAME = "NewRecording.mp3";
         private string _fileName;
 
-        public async void Record()
+        public async Task Record()
         {
             if (IsRecording)
             {
-                throw new InvalidOperationException("Recording already in progress!");
+                //throw new InvalidOperationException("Recording already in progress!");
+                Debug.Write("Button pressed when recording");
             }
             //await Initialize();
             //await DeleteExistingFile();
@@ -39,7 +42,7 @@ namespace OralHistoryRecorder
             IsRecording = true;
         }
 
-        public async void StopRecording()
+        public async Task StopRecording()
         {
             await _mediaCapture.StopRecordAsync();
             IsRecording = false;
