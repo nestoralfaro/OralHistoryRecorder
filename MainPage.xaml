@@ -17,7 +17,7 @@
         <StackPanel HorizontalAlignment="Center" Grid.Row="1">
             <Button Name="btnRecord" Content="Start" Click="btnRecord_Click"/>
             <Button Name="btnPlay" Click="btnPlay_Click">Play</Button>
-            <TextBlock x:Name="timeText" Text="00:00:00:000" Foreground="Black" Height="41" Width="187"/>
+            <TextBlock x:Name="timeText" Text="00:00:00:000" Height="41" Width="187"/>
             <TextBlock TextWrapping="Wrap" Text="Enter Title"/>
             <!--Does not have a handler for catching the entered text-->
             <TextBox x:Name="enteredTitle" TextWrapping="Wrap" Text=""/>

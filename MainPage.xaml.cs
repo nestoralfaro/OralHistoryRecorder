@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -66,11 +67,6 @@ namespace OralHistoryRecorder
 
         }
 
-        //private void btnPlay_Click(object sender, RoutedEventArgs e)
-        //{
-        //    this._audioRecorder.Play();
-        //}
-
         private async void btnPlay_Click(object sender, RoutedEventArgs e)
         {
             await audioRecorder.PlayFromDisk(Dispatcher);
@@ -94,6 +90,7 @@ namespace OralHistoryRecorder
         {
 
             string curDir = Directory.GetCurrentDirectory();
+
 
             var tfile = TagLib.File.Create(curDir + "\\NewRecording.mp3");
             string title = tfile.Tag.Title;
