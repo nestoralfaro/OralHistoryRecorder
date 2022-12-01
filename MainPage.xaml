@@ -12,11 +12,11 @@
             <RowDefinition Height="43"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <TextBlock FontSize="24">Oral History Recorder</TextBlock>
         <StackPanel HorizontalAlignment="Center" Grid.Row="1">
             <Button Name="btnRecord" Content="Start" Click="btnRecord_Click"/>
-            <Button Name="btnPlay" Click="btnPlay_Click">Play</Button>
+            <Button x:Name="btnPlay" Click="btnPlay_Click" Content="Play"/>
             <TextBlock x:Name="timeText" Text="00:00:00:000" Height="41" Width="187"/>
             <TextBlock TextWrapping="Wrap" Text="Enter Title"/>
             <!--Does not have a handler for catching the entered text-->
@@ -30,6 +30,7 @@
             -->
             <Button Name="enterTagButton" Click="enterTagButton_Click">Enter Tag</Button>
         </StackPanel>
+        <StackPanel Margin="0,43,1192,378" Grid.RowSpan="2"/>
     </Grid>
 
 </Page>

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Xaml;
@@ -28,6 +29,7 @@ namespace OralHistoryRecorder
     public sealed partial class MainPage : Page
     {
         AudioRecorderLib audioRecorder;
+        RecordingClass recording = new RecordingClass();
 
         private DispatcherTimer dispatcherTimer, demoDispatcher;
         private DateTime startedTime;
@@ -92,7 +94,10 @@ namespace OralHistoryRecorder
             string curDir = Directory.GetCurrentDirectory();
 
 
-            var tfile = TagLib.File.Create(curDir + "\\NewRecording.mp3");
+
+            //var tfile = TagLib.File.Create(@"C:\Users\aurru\OneDrive\Desktop\NewRecording.mp3");
+            var dir = ApplicationData.Current.LocalFolder.Path;
+            var tfile = TagLib.File.Create(dir + "\\NewRecording.mp3");
             string title = tfile.Tag.Title;
             TimeSpan duration = tfile.Properties.Duration;
             Debug.WriteLine("Title: {0}, duration: {1}", title, duration);
