@@ -8,14 +8,16 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Grid>
-        <TextBlock FontSize="24" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="101,156,0,0" Height="180" Width="598">
-            <LineBreak/>
-            **  Acknowledge this is a research project <LineBreak/>
-            **  Share only appropriate stories <LineBreak/>
-            **  Made publicly available on History Booth <LineBreak/>
-            
-        </TextBlock>
-        <Button x:Name="agreeBtn" Content="Agree" Margin="187,362,0,0" VerticalAlignment="Top" FontSize="20" Click="agreeBtn_Click"/>
-        <Button x:Name="declineBtn" Content="Decline" Margin="405,362,0,0" VerticalAlignment="Top" FontSize="20" Click="declineBtn_Click"/>
+        <RelativePanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Name="agreementBlock" FontSize="30" Width="598">
+                <LineBreak/>
+                **  Acknowledge this is a research project <LineBreak/>
+                **  Share only appropriate stories <LineBreak/>
+                **  Made publicly available on History Booth <LineBreak/>
+
+            </TextBlock>
+            <Button x:Name="agreeBtn" Content="Agree" Margin="200, 0, 60, 30" RelativePanel.Below="agreementBlock" Click="agreeBtn_Click"/>
+            <Button x:Name="declineBtn" Content="Decline" Margin="0, 0, 0, 30" RelativePanel.Below="agreementBlock" RelativePanel.RightOf="agreeBtn" Click="declineBtn_Click"/>
+        </RelativePanel>
     </Grid>
 </Page>
