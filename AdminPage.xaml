@@ -1,0 +1,33 @@
+﻿<Page
+    x:Class="OralHistoryRecorder.AdminPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:OralHistoryRecorder"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:data="using:OralHistoryRecorder"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+
+        <GridView ItemsSource="{x:Bind studentRecordingList}">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="data:StudentRecording">
+                    <StackPanel>
+                        <TextBlock Text="{x:Bind Title}"/>
+                        <TextBlock Text="{x:Bind tag}"/>
+                        <TextBlock Text="{x:Bind duration}"/>
+                        <TextBlock Text="{x:Bind date}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+
+        <TextBlock Grid.Row="1" Name="recordingsResult" FontSize="24" Foreground="LightGray" Margin="0,20,0,0"/>
+    </Grid>
+</Page>

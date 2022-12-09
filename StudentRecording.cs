@@ -25,12 +25,22 @@ namespace OralHistoryRecorder
             var stuRecordings =  new List<StudentRecording>();
             
             //Adding a new recording into the List
-            stuRecordings.Add(new StudentRecording {RecId = 1, 
-                                                    Title = "Dorm Adventures", 
-                                                    tag = "Dorm Life", 
-                                                    duration = 4.00f,
-                                                    date = "12/09/2022"});
+            stuRecordings.Add(new StudentRecording {
+                RecId = 1, 
+                Title = "Dorm Adventures", 
+                tag = "Dorm Life", 
+                duration = 4.56f,
+                date = "12/09/2022"});
             
+            stuRecordings.Add(new StudentRecording
+            {
+                RecId = 1,
+                Title = "Clubs are great!",
+                tag = "Club Stuff",
+                duration = 7.34f,
+                date = "10/09/2022"
+            });
+
             return stuRecordings;
         }
     }

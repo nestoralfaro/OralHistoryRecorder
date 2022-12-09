@@ -20,21 +20,11 @@ namespace OralHistoryRecorder
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class UserSelectionPage : Page
+    public sealed partial class AdminPassPage : Page
     {
-        public UserSelectionPage()
+        public AdminPassPage()
         {
             this.InitializeComponent();
-        }
-
-        private void adminButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(AdminPassPage));
-        }
-
-        private void studentButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(AcknowledgementPage));
         }
     }
 }

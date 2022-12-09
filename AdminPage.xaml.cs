@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -20,21 +21,14 @@ namespace OralHistoryRecorder
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class UserSelectionPage : Page
+    public sealed partial class AdminPage : Page
     {
-        public UserSelectionPage()
+        private List<StudentRecording> studentRecordingList;
+        public AdminPage()
         {
             this.InitializeComponent();
-        }
 
-        private void adminButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(AdminPassPage));
-        }
-
-        private void studentButton_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(AcknowledgementPage));
+            studentRecordingList = RecordingManager.retrieveBooks();
         }
     }
 }
