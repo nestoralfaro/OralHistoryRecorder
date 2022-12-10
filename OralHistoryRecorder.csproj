@@ -132,9 +132,9 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\StudentRecording.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordingClass.cs" />
-    <Compile Include="StudentRecording.cs" />
     <Compile Include="UserSelectionPage.xaml.cs">
       <DependentUpon>UserSelectionPage.xaml</DependentUpon>
     </Compile>
@@ -199,7 +199,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

@@ -9,12 +9,19 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <RelativePanel VerticalAlignment="Center" HorizontalAlignment="Center">
-            <TextBlock x:Name="passwordPrompt" Text="Enter Username: " Margin="0,0,15,0" Height="30"/>
-            <TextBox PlaceholderText="Username" RelativePanel.RightOf="passwordPrompt" Height="30"/>
-            <PasswordBox x:Name="adminPass" PlaceholderText="Enter Administrator Password" 
-                         RelativePanel.Below="passwordPrompt"
-                         Width="200"/>
+        <RelativePanel VerticalAlignment="Center" HorizontalAlignment="Center" Height="300">
+                <Image  Name="bisonPic" Width="100" Height="100" Source="/Assets/HUBisonLogo.png"
+                        RelativePanel.AlignHorizontalCenterWithPanel="True"/>
+                <TextBlock x:Name="passwordPrompt" Text="Enter Username: " 
+                           Margin="0,0,15,0" Height="30"
+                           RelativePanel.Below="bisonPic"/>
+                <TextBox PlaceholderText="Username" RelativePanel.RightOf="passwordPrompt" 
+                         Height="30" Width="200"
+                         RelativePanel.AlignBottomWith="passwordPrompt"/>
+                <PasswordBox x:Name="adminPass" 
+                             PlaceholderText="Enter Administrator Password" 
+                             RelativePanel.Below="passwordPrompt"
+                             Width="317"/>
         </RelativePanel>
     </Grid>
 </Page>

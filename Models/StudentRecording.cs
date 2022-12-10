@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 // Model definition inspired by Collin Blake - https://www.youtube.com/watch?v=sCz_lqovLRg
 
-namespace OralHistoryRecorder
+namespace OralHistoryRecorder.Models
 {
     public class StudentRecording
     {
