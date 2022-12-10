@@ -48,11 +48,21 @@ namespace OralHistoryRecorder
             IsRecording = false;
             SaveAudioToFile();
         }
-
+        public async Task PauseRecording()
+        {
+            await _mediaCapture.PauseRecordAsync(Windows.Media.Devices.MediaCapturePauseBehavior.RetainHardwareResources);
+            IsRecording = false;
+        }
+        public async Task ResumeRecording()
+        {
+            await _mediaCapture.ResumeRecordAsync();
+            IsRecording = true;
+        }
         private async void SaveAudioToFile()
         {
             IRandomAccessStream audioStream = _memoryBuffer.CloneStream();
-            StorageFolder storageFolder = Package.Current.InstalledLocation;
+            //StorageFolder storageFolder = Package.Current.InstalledLocation;
+            StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
             StorageFile storageFile = await storageFolder.CreateFileAsync(
             DEFAULT_AUDIO_FILENAME, CreationCollisionOption.GenerateUniqueName);
             this._fileName = storageFile.Name;

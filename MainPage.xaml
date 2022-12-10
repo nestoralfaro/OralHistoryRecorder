@@ -53,11 +53,25 @@
                 <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Oral History Booth" Margin="10"/>
                 <Image Width="Auto" Height="100" Source="/Assets/HUBisonLogo.png"/>
             </StackPanel>
+
+
+
+
+
+
+
+
+
+
+
             <StackPanel Margin="24">
                 <TextBox x:Name="name" PlaceholderText="Enter your name" Style="{StaticResource TextBoxStyle}"/>
-                <Button Name="btnRecord" Content="Start" Click="btnRecord_Click"/>
+                <Button Name="btnStartRecording" Content="Start" Click="btnStartRecording_Click"/>
+                <Button Name="btnPauseRecording" Content="Pause" Click="btnPauseRecording_Click"/>
+                <Button Name="btnRemoveRecording" Content="Remove" Click="btnRemoveRecording_Click"/>
                 <Button x:Name="btnPlay" Click="btnPlay_Click" Content="Play"/>
-                <TextBlock x:Name="timeText" Text="00:00:00:000" Height="41" Width="187"/>
+                <TextBlock x:Name="timeText" Text="00:10:00:000" Height="41" Width="187"/>
+                <TextBlock x:Name="TextBlockTimeRemaining"/>
                 <TextBlock TextWrapping="Wrap" Text="Enter Custom Tag"/>
                 <!--Does not have a handler for catching the entered text-->
                 <TextBox x:Name="enteredTitle" TextWrapping="Wrap" PlaceholderText="Custom Tag" Text=""/>

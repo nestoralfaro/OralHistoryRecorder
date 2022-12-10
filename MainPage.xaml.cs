@@ -30,20 +30,41 @@ namespace OralHistoryRecorder
     public sealed partial class MainPage : Page
     {
         AudioRecorderLib audioRecorder;
-        RecordingClass recording = new RecordingClass();
 
         private DispatcherTimer dispatcherTimer, demoDispatcher;
         private DateTime startedTime;
         private TimeSpan timePassed, timeSinceLastStop;
         bool isStop = false;
+        bool isPaused = false;
 
         public MainPage()
         {
             InitializeComponent();
             audioRecorder = new AudioRecorderLib();
         }
+        private async void btnPauseRecording_Click(object sender, RoutedEventArgs e)
+        {
+            if (isPaused == false)
+            {
+                // Should pause
+                isPaused = true;
+                demoDispatcher.Stop();
+                dispatcherTimer.Stop();
+                btnPauseRecording.Content = "Resume";
+                await audioRecorder.PauseRecording();
+            } else
+            {
+                // Should resume
+                isPaused = false;
+                demoDispatcher.Start();
+                dispatcherTimer.Start();
+                btnPauseRecording.Content = "Pause";
+                await audioRecorder.ResumeRecording();
+            }
 
-        private async void btnRecord_Click(object sender, RoutedEventArgs e)
+        }
+
+        private async void btnStartRecording_Click(object sender, RoutedEventArgs e)
         {
 
             if (isStop == false)
@@ -51,7 +72,7 @@ namespace OralHistoryRecorder
                 isStop = true;
                 startedTime = DateTime.Now;
                 DispatcherTimerSetup();
-                btnRecord.Content = "Stop";
+                btnStartRecording.Content = "Stop";
                 await audioRecorder.Record();
             }
             else
@@ -59,13 +80,9 @@ namespace OralHistoryRecorder
                 isStop = false;
                 dispatcherTimer.Stop();
                 demoDispatcher.Stop();
-                timeText.Text = "00:00:00:000";
-                btnRecord.Content = "Start";
+                timeText.Text = "00:10:00:000";
+                btnStartRecording.Content = "Start";
                 await audioRecorder.StopRecording();
-
-
-
-
             }
 
         }
@@ -81,8 +98,8 @@ namespace OralHistoryRecorder
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
             dispatcherTimer.Start();
 
-            timeSinceLastStop = TimeSpan.Zero;
-            timeText.Text = "00:00:00:000";
+            timeSinceLastStop = new TimeSpan(0, 0, 10, 0, 0);
+            timeText.Text = "00:10:00:000";
             demoDispatcher = new DispatcherTimer();
             demoDispatcher.Tick += DemoDispatcher_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
@@ -91,13 +108,9 @@ namespace OralHistoryRecorder
 
         private void enterTagButton_Click(object sender, RoutedEventArgs e)
         {
-
-            string curDir = Directory.GetCurrentDirectory();
-
-
-
-            //var tfile = TagLib.File.Create(@"C:\Users\aurru\OneDrive\Desktop\NewRecording.mp3");
             var dir = ApplicationData.Current.LocalFolder.Path;
+            Debug.WriteLine("the dir where it is being stored");
+            Debug.WriteLine(dir);
             var tfile = TagLib.File.Create(dir + "\\NewRecording.mp3");
             string title = tfile.Tag.Title;
             TimeSpan duration = tfile.Properties.Duration;
@@ -133,6 +146,11 @@ namespace OralHistoryRecorder
             }
         }
 
+        private void btnRemoveRecording_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
 
         private string MakeDigitString(int number, int count)
         {
@@ -163,10 +181,10 @@ namespace OralHistoryRecorder
         private void DemoDispatcher_Tick(object sender, object e)
         {
             timePassed = DateTime.Now - startedTime;
-            timeText.Text = MakeDigitString((timeSinceLastStop + timePassed).Hours, 2) + ":"
-                + MakeDigitString((timeSinceLastStop + timePassed).Minutes, 2) + ":"
-                + MakeDigitString((timeSinceLastStop + timePassed).Seconds, 2) + ":"
-                + MakeDigitString((timeSinceLastStop + timePassed).Milliseconds, 3);
+            timeText.Text = MakeDigitString((timeSinceLastStop - timePassed).Hours, 2) + ":"
+                + MakeDigitString((timeSinceLastStop - timePassed).Minutes, 2) + ":"
+                + MakeDigitString((timeSinceLastStop - timePassed).Seconds, 2) + ":"
+                + MakeDigitString((timeSinceLastStop - timePassed).Milliseconds, 3);
         }
     }
 }
