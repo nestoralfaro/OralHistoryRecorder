@@ -10,6 +10,7 @@ using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -106,6 +107,32 @@ namespace OralHistoryRecorder
             tfile.Tag.Title = "done with taglibsharp";
             tfile.Save();
         }
+
+        private void Tag_Checked(object sender, RoutedEventArgs e)
+        {
+            ToggleButton toggleButton = (ToggleButton)sender;
+            toggleButton.Background = new SolidColorBrush(Colors.Black);
+            toggleButton.Foreground = new SolidColorBrush(Colors.Gold);
+        }
+
+        private void Tag_Unchecked(object sender, RoutedEventArgs e)
+        {
+            ToggleButton toggleButton = (ToggleButton)sender;
+            toggleButton.Background = new SolidColorBrush(Colors.White);
+            toggleButton.Foreground = new SolidColorBrush(Colors.Black);
+        }
+
+
+        private void ComboBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBoxItem selectedItem = ComboBox1.SelectedItem as ComboBoxItem;
+            if (selectedItem != null)
+            {
+                string selectedOption = selectedItem.Content.ToString();
+                // Do something with the selected option...
+            }
+        }
+
 
         private string MakeDigitString(int number, int count)
         {

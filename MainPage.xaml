@@ -7,30 +7,105 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="43"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Page.Resources>
+        <ResourceDictionary>
+            <Style x:Key="TextBoxStyle" TargetType="TextBox">
+                <Setter Property="Margin" Value="0,8,0,0"/>
+                <Setter Property="Padding" Value="8"/>
+                <Setter Property="BorderBrush" Value="Gray"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+            <Style x:Key="ButtonStyle" TargetType="Button">
+                <Setter Property="Margin" Value="0,16,0,0"/>
+                <Setter Property="Padding" Value="12,8"/>
+                <Setter Property="BorderBrush" Value="Gray"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="FontSize" Value="16"/>
+            </Style>
+            
+            
+            <Style x:Key="MyToggleButtonStyle" TargetType="ToggleButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border x:Name="Border" BorderThickness="1" CornerRadius="8" BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}">
+                                <ContentPresenter x:Name="ContentPresenter"
+                                          VerticalAlignment="Center"
+                                          HorizontalAlignment="Center"
+                                          AutomationProperties.AccessibilityView="Raw"
+                                          Content="{TemplateBinding Content}"
+                                          Padding="10"
+                                          FontWeight="Normal" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
 
-        <TextBlock FontSize="24">Oral History Recorder</TextBlock>
-        <StackPanel HorizontalAlignment="Center" Grid.Row="1">
-            <Button Name="btnRecord" Content="Start" Click="btnRecord_Click"/>
-            <Button x:Name="btnPlay" Click="btnPlay_Click" Content="Play"/>
-            <TextBlock x:Name="timeText" Text="00:00:00:000" Height="41" Width="187"/>
-            <TextBlock TextWrapping="Wrap" Text="Enter Title"/>
-            <!--Does not have a handler for catching the entered text-->
-            <TextBox x:Name="enteredTitle" TextWrapping="Wrap" Text=""/>
-            <!--
-            Once the Enter Tag button is pressed it should change the NewRecording.mp3 Title
-            tag to "done with taglibsharp" as you can see on AudioRecordLib.cs:104;
-            however, it won't let me do it due to an unauthorized exception that seems
-            to require admin permissions, which I do not have on the computer
-            I am currently working with :/
-            -->
-            <Button Name="enterTagButton" Click="enterTagButton_Click">Enter Tag</Button>
+            
+            
+        </ResourceDictionary>
+    </Page.Resources>
+    <Grid>
+        <StackPanel>
+            <StackPanel Margin="10" HorizontalAlignment="Center">
+                <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Oral History Booth" Margin="10"/>
+                <Image Width="Auto" Height="100" Source="/Assets/HUBisonLogo.png"/>
+            </StackPanel>
+            <StackPanel Margin="24">
+                <TextBox x:Name="name" PlaceholderText="Enter your name" Style="{StaticResource TextBoxStyle}"/>
+                <Button Name="btnRecord" Content="Start" Click="btnRecord_Click"/>
+                <Button x:Name="btnPlay" Click="btnPlay_Click" Content="Play"/>
+                <TextBlock x:Name="timeText" Text="00:00:00:000" Height="41" Width="187"/>
+                <TextBlock TextWrapping="Wrap" Text="Enter Custom Tag"/>
+                <!--Does not have a handler for catching the entered text-->
+                <TextBox x:Name="enteredTitle" TextWrapping="Wrap" PlaceholderText="Custom Tag" Text=""/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
+                    <ToggleButton x:Name="ChapelTag"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                          Checked="Tag_Checked"
+                          CornerRadius="8"
+                          BorderThickness="1"
+                          Unchecked="Tag_Unchecked"
+                      >
+                        <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Symbol="People"/>
+                        <TextBlock Text="Chapel"/>
+                        </StackPanel>
+                    </ToggleButton>
+
+                    <ToggleButton x:Name="DormTag"
+                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                          IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                          Checked="Tag_Checked"
+                          CornerRadius="8"
+                          BorderThickness="1"
+                          Unchecked="Tag_Unchecked"
+                      >
+                        <StackPanel Orientation="Horizontal">
+                        <SymbolIcon Symbol="Home"/>
+                        <TextBlock Text="Dorm Life"/>
+                        </StackPanel>
+                    </ToggleButton>
+                </StackPanel>
+                <TextBlock TextWrapping="Wrap" Text="Enter Decade"/>
+                <ComboBox x:Name="ComboBox1"
+                    Height="32"
+                    Width="150"
+                    BorderThickness="1"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                    SelectionChanged="ComboBox1_SelectionChanged">
+                    <ComboBoxItem Content="1940s" />
+                    <ComboBoxItem Content="1950s" />
+                    <ComboBoxItem Content="1960s" />
+                </ComboBox>
+
+                <Button Name="enterTagButton" Click="enterTagButton_Click">Submit</Button>
+            </StackPanel>
         </StackPanel>
-        <StackPanel Margin="0,43,1192,378" Grid.RowSpan="2"/>
-    </Grid>
+</Grid>
+
 
 </Page>
