@@ -12,44 +12,38 @@
         <RelativePanel VerticalAlignment="Center" HorizontalAlignment="Center" Height="500">
             <Image  Name="bisonPic" Width="100" Height="100" Source="/Assets/HUBisonLogo.png"
                     RelativePanel.AlignHorizontalCenterWithPanel="True"/>
-            
             <TextBlock x:Name="passwordPrompt" Text="Enter Username: " 
                         Margin="0,0,15,0" Height="30"
                         RelativePanel.Below="bisonPic"/>
-            
             <TextBox x:Name="usernameTextBox" PlaceholderText="Username" RelativePanel.RightOf="passwordPrompt" 
                         Height="30" Width="200"
                         RelativePanel.AlignBottomWith="passwordPrompt"/>
-            
             <PasswordBox x:Name="adminPass" 
                             PlaceholderText="Enter Administrator Password" 
                             RelativePanel.Below="passwordPrompt"
                             Width="317"/>
-            
+
             <Button x:Name="enterButton" Content="Enter" 
                     RelativePanel.Below="adminPass"
                     RelativePanel.AlignHorizontalCenterWithPanel="True"
                     Height="30" Width="60" Margin="50,20,0,50" Click="enterButton_Click"/>
 
-            <Rectangle x:Name="divider" RelativePanel.Below="enterButton" 
-                       Margin="0,20,0,0"
-                       HorizontalAlignment="Stretch" Width="auto" Height="1" Fill="LightGray" />
-            
-            <TextBlock x:Name="passQuestion" Text="Do not have a password?"
+
+            <TextBlock x:Name="passQuestion" Text="Do you have an administrator user?"
                         TextAlignment="Center"
                         Margin="0,0,15,0" Height="30"
-                        RelativePanel.Below="divider"/>
-            
+                        RelativePanel.Below="enterButton"/>
+
             <Button x:Name="yesButton" Content="Yes" 
                     RelativePanel.RightOf="passQuestion"
-                    RelativePanel.Below="divider"
+                    RelativePanel.Below="enterButton"
                     Margin="0,0,10,0" Click="yesButton_Click"/>
             <Button x:Name="noButton" Content="No" 
                     RelativePanel.RightOf="yesButton"
-                    RelativePanel.Below="divider" Click="noButton_Click"/>
+                    RelativePanel.Below="enterButton" Click="noButton_Click"/>
 
-             
-            <TextBlock x:Name="createPassInst" TextWrapping="WrapWholeWords" Text="Create password by typing a new username and password on the boxes above"
+
+            <TextBlock x:Name="createPassInst" TextWrapping="WrapWholeWords" Text="Create a user by typing a new username and password in the boxes above"
                        Width="200" RelativePanel.Below="passQuestion"
                        Visibility="Collapsed"
                        RelativePanel.AlignHorizontalCenterWithPanel="True"
@@ -61,7 +55,7 @@
                     RelativePanel.AlignHorizontalCenterWithPanel="True"
                     Click="setUpButton_Click"
                     Height="30" Width="110" Margin="50,20,0,50"/>
-            
+
         </RelativePanel>
     </Grid>
 </Page>

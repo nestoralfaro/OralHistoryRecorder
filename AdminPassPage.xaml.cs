@@ -31,6 +31,7 @@ namespace OralHistoryRecorder
             users = new List<UserTemplate>();
             this.InitializeComponent();
             users.Add(new UserTemplate{ username = "klaing", password="H12345678" });
+            users.Add(new UserTemplate{ username = "test", password="test" });
         }
 
         private void yesButton_Click(object sender, RoutedEventArgs e)
@@ -56,16 +57,31 @@ namespace OralHistoryRecorder
             createPassInst.Visibility = Visibility.Collapsed;
             setUpButton.Visibility = Visibility.Collapsed;
 
-            users.Add(new UserTemplate { username = usernameTextBox.Text, password = adminPass.Password });
-
-            ContentDialog userCreated = new ContentDialog
+            if(usernameTextBox.Text != null || adminPass.Password != null)
             {
-                Title = "Successful",
-                Content = "The username and password were created succesfully",
-                CloseButtonText = "OK"
-            };
+                users.Add(new UserTemplate { username = usernameTextBox.Text, password = adminPass.Password });
+            
+                ContentDialog userCreated = new ContentDialog
+                {
+                    Title = "Successful",
+                    Content = "The username and password were created succesfully",
+                    CloseButtonText = "OK"
+                };
 
-            await userCreated.ShowAsync();
+                await userCreated.ShowAsync();
+            }
+            else
+            {
+                ContentDialog creationErr = new ContentDialog
+                {
+                    Title = "Creation Error",
+                    Content = "You must have a username or password. Try again.",
+                    CloseButtonText = "OK"
+                };
+
+                await creationErr.ShowAsync();
+            }
+
 
         }
 

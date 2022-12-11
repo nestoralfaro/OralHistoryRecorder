@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using OralHistoryRecorder.Models;
+using System.Threading.Tasks;
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace OralHistoryRecorder
@@ -23,12 +24,26 @@ namespace OralHistoryRecorder
     /// </summary>
     public sealed partial class AdminPage : Page
     {
-        private List<StudentRecording> studentRecordingList;
+        private ObservableCollection<StudentRecording> studentRecordingList = new ObservableCollection<StudentRecording>();
         public AdminPage()
         {
             this.InitializeComponent();
 
-            studentRecordingList = RecordingManager.retrieveRecordings();
+            InitializeAsync();
+        }
+
+        private void AddRange(ObservableCollection<StudentRecording> collection, List<StudentRecording> items)
+        {
+            foreach (var item in items)
+            {
+                collection.Add(item);
+            }
+        }
+
+        private async Task InitializeAsync()
+        {
+            var tempList = await RecordingManager.retrieveRecordings();
+            AddRange(studentRecordingList, tempList);
         }
     }
 }

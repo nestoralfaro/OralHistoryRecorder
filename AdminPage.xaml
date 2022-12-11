@@ -9,22 +9,28 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid ScrollViewer.VerticalScrollBarVisibility="Auto" 
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
         <GridView ItemsSource="{x:Bind studentRecordingList}">
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="data:StudentRecording">
-                    <StackPanel>
-                        <TextBlock Text="{x:Bind Title}"/>
-                        <TextBlock Text="{x:Bind tag}"/>
-                        <TextBlock Text="{x:Bind duration}"/>
-                        <TextBlock Text="{x:Bind decade}"/>
+                    <StackPanel Background="LightGray" Width="200">
+                        <TextBlock Text="{x:Bind Title}" Foreground="Black"/>
+                        <TextBlock Text="{x:Bind tag}"  Foreground="Black"/>
+                        <TextBlock Text="{x:Bind duration}"  Foreground="Black"/>
+                        <TextBlock Text="{x:Bind decade}"  Foreground="Black"/>
                     </StackPanel>
                 </DataTemplate>
+
             </GridView.ItemTemplate>
         </GridView>
 
