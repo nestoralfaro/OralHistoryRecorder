@@ -7,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -50,6 +51,13 @@ namespace OralHistoryRecorder
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
+                // ADD: Register Navigated event handler
+                rootFrame.Navigated += RootFrame_Navigated;
+
+                // ADD: Register BackRequested event handler
+                SystemNavigationManager.GetForCurrentView().BackRequested += App_BackRequested;
+
+
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                     //TODO: Load state from previously suspended application
@@ -71,6 +79,25 @@ namespace OralHistoryRecorder
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+        }
+
+        private void App_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            Frame rootFrame = Window.Current.Content as Frame;
+            if (rootFrame.CanGoBack)
+            {
+                e.Handled = true;
+                rootFrame.GoBack();
+            }
+        }
+
+            private void RootFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            // Determine if Back button should be visible
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                ((Frame)sender).CanGoBack ?
+                AppViewBackButtonVisibility.Visible :
+                AppViewBackButtonVisibility.Collapsed;
         }
 
         /// <summary>
