@@ -18,7 +18,8 @@ namespace OralHistoryRecorder
         private InMemoryRandomAccessStream _memoryBuffer;
         public bool IsRecording { get; set; }
         private string DEFAULT_AUDIO_FILENAME = "NewRecording.mp3";
-        private string _fileName;
+        public string audioFileName { get; set; }
+        private string _fileName { get; set; }
 
         public async Task Record()
         {
@@ -64,8 +65,8 @@ namespace OralHistoryRecorder
             //StorageFolder storageFolder = Package.Current.InstalledLocation;
             StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
             StorageFile storageFile = await storageFolder.CreateFileAsync(
-            DEFAULT_AUDIO_FILENAME, CreationCollisionOption.GenerateUniqueName);
-            this._fileName = storageFile.Name;
+            String.IsNullOrEmpty(audioFileName) ? DEFAULT_AUDIO_FILENAME : audioFileName, CreationCollisionOption.GenerateUniqueName);
+            _fileName = storageFile.Name;
             using (IRandomAccessStream fileStream =
             await storageFile.OpenAsync(FileAccessMode.ReadWrite))
             {
@@ -89,7 +90,7 @@ namespace OralHistoryRecorder
             {
                 MediaElement playbackMediaElement = new MediaElement();
                 StorageFolder storageFolder = Package.Current.InstalledLocation;
-                StorageFile storageFile = await storageFolder.GetFileAsync(this._fileName);
+                StorageFile storageFile = await storageFolder.GetFileAsync(_fileName);
                 IRandomAccessStream stream = await storageFile.OpenAsync(FileAccessMode.Read);
                 playbackMediaElement.SetSource(stream, storageFile.FileType);
                 playbackMediaElement.Play();

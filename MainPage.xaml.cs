@@ -78,7 +78,6 @@ namespace OralHistoryRecorder
 
         private async void btnStartRecording_Click(object sender, RoutedEventArgs e)
         {
-
             if (isStop == false)
             {
                 isStop = true;
@@ -125,22 +124,35 @@ namespace OralHistoryRecorder
             var dir = ApplicationData.Current.LocalFolder.Path;
             Debug.WriteLine("the dir where it is being stored");
             Debug.WriteLine(dir);
-            var tfile = TagLib.File.Create(dir + "\\NewRecording.mp3");
+            var tfile = TagLib.File.Create(dir + "\\" + audioRecorder.audioFileName);
             string title = tfile.Tag.Title;
             TimeSpan duration = tfile.Properties.Duration;
             Debug.WriteLine("Title: {0}, duration: {1}", title, duration);
 
+            //tfile.Tag.Title = nameTextBox.Text + student.RecId;
+            tfile.Tag.Title = audioRecorder.audioFileName.Replace(".mp3", "");
+
+            ComboBoxItem selectedItem = decadeComboBox.SelectedItem as ComboBoxItem;
+            string selectedOption = selectedItem.Content.ToString();
+
+            tfile.Tag.Year = UInt32.Parse(selectedOption);
+            Debug.WriteLine("this is the tag to add hopefully");
+            Debug.WriteLine(student.tag);
+            //tfile.Tag.Comment = student.tag;
+            tfile.Tag.Comment = (bool)ChapelTag.IsChecked ? "Chapel," : "";
+            tfile.Tag.Comment += (bool)DormTag.IsChecked ? "Dorm," : "";
+            tfile.Tag.Comment += String.IsNullOrEmpty(enteredCustomTag.Text) ? "" : (enteredCustomTag.Text + ",");
 
             //Restore to default
-            nameTextBox.Text = String.Empty;
+            //nameTextBox.Text = String.Empty;
             enteredCustomTag.Text = String.Empty;
             ChapelTag.IsChecked = false;
             DormTag.IsChecked = false;
-            btnEnterTag.IsEnabled = false;
+            //btnEnterTag.IsEnabled = false;
 
+            ++student.RecId;
 
             // change title in the file
-            tfile.Tag.Title = "done with taglibsharp";
             tfile.Save();
         }
 
@@ -171,9 +183,9 @@ namespace OralHistoryRecorder
         }
 
 
-        private void ComboBox1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void decadeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ComboBoxItem selectedItem = ComboBox1.SelectedItem as ComboBoxItem;
+            ComboBoxItem selectedItem = decadeComboBox.SelectedItem as ComboBoxItem;
             if (selectedItem != null)
             {
                 string selectedOption = selectedItem.Content.ToString();
@@ -205,6 +217,8 @@ namespace OralHistoryRecorder
                 btnEnterTag.IsEnabled = true;
 
                 student.Title = nameTextBox.Text + student.RecId;
+                audioRecorder.audioFileName = nameTextBox.Text + student.RecId + ".mp3";
+ 
             } 
         }
 
