@@ -65,7 +65,7 @@ namespace OralHistoryRecorder
                 demoDispatcher.Stop();
                 dispatcherTimer.Stop();
                 PauseText.Text = "Resume";
-                PauseIcon.Symbol = Symbol.Back;
+                PauseIcon.Symbol = Symbol.RepeatAll;
                 stopTime = DateTime.Now;
                 await audioRecorder.PauseRecording();
             } else
@@ -176,6 +176,7 @@ namespace OralHistoryRecorder
             //tfile.Tag.Comment = student.tag;
             tfile.Tag.Comment = (bool)ChapelTag.IsChecked ? "Chapel," : "";
             tfile.Tag.Comment += (bool)DormTag.IsChecked ? "Dorm," : "";
+            tfile.Tag.Comment += (bool)ClubTag.IsChecked ? "Club," : "";
             tfile.Tag.Comment += String.IsNullOrEmpty(enteredCustomTag.Text) ? "" : (enteredCustomTag.Text + ",");
 
             //Restore to default

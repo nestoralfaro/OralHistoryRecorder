@@ -65,7 +65,7 @@
                               Unchecked="Tag_Unchecked"
                           >
                         <StackPanel Orientation="Horizontal">
-                            <SymbolIcon Symbol="People"/>
+                            <SymbolIcon Symbol="Globe"/>
                             <TextBlock Text="Chapel"/>
                         </StackPanel>
                     </ToggleButton>
@@ -83,6 +83,21 @@
                             <TextBlock Text="Dorm Life"/>
                         </StackPanel>
                     </ToggleButton>
+
+                    <ToggleButton x:Name="ClubTag"
+                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                              IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                              Checked="Tag_Checked"
+                              CornerRadius="8"
+                              BorderThickness="1"
+                              Unchecked="Tag_Unchecked"
+                          >
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Symbol="People"/>
+                            <TextBlock Text="Club Stuff"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    
                     <StackPanel>
                         <TextBlock TextWrapping="Wrap" Text="Enter Custom Tag"/>
                         <TextBox x:Name="enteredCustomTag" TextWrapping="Wrap" PlaceholderText="Custom Tag"/>
