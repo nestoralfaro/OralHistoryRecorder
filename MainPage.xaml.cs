@@ -106,9 +106,7 @@ namespace OralHistoryRecorder
                 btnEnterTag.IsEnabled = true;
                 btnPauseRecording.IsEnabled = false;
                 await audioRecorder.StopRecording();
-
             }
-
         }
 
         private async void btnPlay_Click(object sender, RoutedEventArgs e)
@@ -212,6 +210,10 @@ namespace OralHistoryRecorder
                 // Show a message that the file was successfully removed
                 var messageDialog = new MessageDialog($"{Regex.Replace(audioRecorder.audioFileName, @"\d*\.mp3", "")} was successfully removed.");
                 await messageDialog.ShowAsync();
+                btnRemoveRecording.IsEnabled = false;
+                btnPlay.IsEnabled = false;
+                PauseText.Text = "Pause";
+                PauseIcon.Symbol = Symbol.Pause;
             }
             else
             {
