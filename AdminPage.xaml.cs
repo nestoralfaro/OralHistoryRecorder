@@ -28,7 +28,7 @@ namespace OralHistoryRecorder
         {
             this.InitializeComponent();
 
-            studentRecordingList = RecordingManager.retrieveBooks();
+            studentRecordingList = RecordingManager.retrieveRecordings();
         }
     }
 }

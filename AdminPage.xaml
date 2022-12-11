@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <GridView ItemsSource="{x:Bind studentRecordingList}">
-            <GridView.ItemTemplate Foreground="LightGray">
+            <GridView.ItemTemplate>
                 <DataTemplate x:DataType="data:StudentRecording">
                     <StackPanel>
                         <TextBlock Text="{x:Bind Title}"/>
