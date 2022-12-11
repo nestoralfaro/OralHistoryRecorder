@@ -77,6 +77,13 @@ namespace OralHistoryRecorder
             }
         }
 
+        public async void RemoveAudioFile()
+        {
+            StorageFolder audioDir = ApplicationData.Current.LocalFolder;
+            StorageFile audioFile = await audioDir.GetFileAsync(_fileName);
+            await audioFile.DeleteAsync();
+        }
+
         public void Play()
         {
             MediaElement playbackMediaElement = new MediaElement();
@@ -89,7 +96,8 @@ namespace OralHistoryRecorder
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
                 MediaElement playbackMediaElement = new MediaElement();
-                StorageFolder storageFolder = Package.Current.InstalledLocation;
+                //StorageFolder storageFolder = Package.Current.InstalledLocation;
+                StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
                 StorageFile storageFile = await storageFolder.GetFileAsync(_fileName);
                 IRandomAccessStream stream = await storageFile.OpenAsync(FileAccessMode.Read);
                 playbackMediaElement.SetSource(stream, storageFile.FileType);
