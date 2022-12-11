@@ -3,12 +3,15 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Devices.Radios;
+using Windows.UI.Xaml.Media;
 using Windows.Media.Capture;
 using Windows.Media.MediaProperties;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
+using Windows.Media.Playback;
+using Windows.Media.Core;
 
 namespace OralHistoryRecorder
 {
@@ -20,6 +23,21 @@ namespace OralHistoryRecorder
         private string DEFAULT_AUDIO_FILENAME = "NewRecording.mp3";
         public string audioFileName { get; set; }
         private string _fileName { get; set; }
+
+        private MediaPlayer playbackMediaElement;
+
+        public TimeSpan AudioTimePosition
+        {
+            set
+            {
+                playbackMediaElement.PlaybackSession.Position = value;
+            }
+            get
+            {
+                return playbackMediaElement.PlaybackSession.Position;
+            }
+        }
+
 
         public async Task Record()
         {
@@ -95,14 +113,23 @@ namespace OralHistoryRecorder
         {
             await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
             {
-                MediaElement playbackMediaElement = new MediaElement();
+                //MediaElement playbackMediaElement = new MediaElement();
+                playbackMediaElement = new MediaPlayer();
                 //StorageFolder storageFolder = Package.Current.InstalledLocation;
                 StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
                 StorageFile storageFile = await storageFolder.GetFileAsync(_fileName);
                 IRandomAccessStream stream = await storageFile.OpenAsync(FileAccessMode.Read);
-                playbackMediaElement.SetSource(stream, storageFile.FileType);
+                playbackMediaElement.Source = MediaSource.CreateFromStorageFile(storageFile);
+                //playbackMediaElement.SetSource(stream, storageFile.FileType);
                 playbackMediaElement.Play();
             });
         }
+
+        public void StopPlaying()
+        {
+            playbackMediaElement.Pause();
+        }
+
+
     }
 }

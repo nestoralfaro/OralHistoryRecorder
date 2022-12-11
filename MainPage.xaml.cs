@@ -1,27 +1,13 @@
-﻿using NAudio.Wave;
-using OralHistoryRecorder.Models;
+﻿using OralHistoryRecorder.Models;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.RegularExpressions;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Storage;
-using Windows.Storage.Streams;
-using Windows.System;
-using Windows.UI;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -34,11 +20,12 @@ namespace OralHistoryRecorder
     {
         AudioRecorderLib audioRecorder;
 
-        private DispatcherTimer dispatcherTimer, demoDispatcher;
+        private DispatcherTimer dispatcherTimer, demoDispatcher, audioPlayingTimer;
         private DateTime startedTime, stopTime;
         private TimeSpan timePassed, timeSinceLastStop;
         bool isStop = false;
         bool isPaused = false;
+        bool isPlaying = false;
         StudentRecording student;
 
         public MainPage()
@@ -51,9 +38,24 @@ namespace OralHistoryRecorder
             btnPauseRecording.IsEnabled = false;
             btnRemoveRecording.IsEnabled = false;
             btnPlay.IsEnabled = false;
+            PlaybackSlider.IsEnabled = false;
 
             btnEnterTag.IsEnabled = false;
+
+            audioPlayingTimer = new DispatcherTimer();
+            audioPlayingTimer.Tick += AudioPlayingTimer_Tick;
+            audioPlayingTimer.Interval = TimeSpan.FromSeconds(1);
         }
+
+        private void AudioPlayingTimer_Tick(object sender, object e)
+        {
+            if (audioRecorder.AudioTimePosition != TimeSpan.Zero)
+            {
+                PlaybackSlider.Value = audioRecorder.AudioTimePosition.TotalSeconds;
+                CurrentPositionTextBlock.Text = $"{MakeDigitString(audioRecorder.AudioTimePosition.Minutes, 2)}:{MakeDigitString(audioRecorder.AudioTimePosition.Seconds, 2)}";
+            }
+        }
+
         private async void btnPauseRecording_Click(object sender, RoutedEventArgs e)
         {
             if (isPaused == false)
@@ -103,15 +105,38 @@ namespace OralHistoryRecorder
 
                 btnRemoveRecording.IsEnabled = true;
                 btnPlay.IsEnabled = true;
+                PlaybackSlider.IsEnabled = true;
                 btnEnterTag.IsEnabled = true;
                 btnPauseRecording.IsEnabled = false;
+                btnEnterTag.IsEnabled = true;
+                PlaybackSlider.Maximum = timePassed.TotalSeconds;
                 await audioRecorder.StopRecording();
             }
         }
 
         private async void btnPlay_Click(object sender, RoutedEventArgs e)
         {
-            await audioRecorder.PlayFromDisk(Dispatcher);
+            if (isPlaying == false)
+            {
+                // Play Audio
+                PlayText.Text = "Stop";
+                PlayIcon.Symbol = Symbol.Stop;
+                isPlaying = true;
+                audioPlayingTimer.Start();
+                await audioRecorder.PlayFromDisk(Dispatcher);
+            }
+            else
+            {
+                // Stop audio
+                PlayText.Text = "Play";
+                PlayIcon.Symbol = Symbol.Play;
+                isPlaying = false;
+                audioPlayingTimer.Stop();
+                audioRecorder.AudioTimePosition = TimeSpan.Zero;
+                PlaybackSlider.Value = 0;
+                CurrentPositionTextBlock.Text = "00:00";
+                audioRecorder.StopPlaying();
+            }
         }
 
         private void DispatcherTimerSetup()
@@ -158,7 +183,11 @@ namespace OralHistoryRecorder
             enteredCustomTag.Text = String.Empty;
             ChapelTag.IsChecked = false;
             DormTag.IsChecked = false;
-            //btnEnterTag.IsEnabled = false;
+
+            PlaybackSlider.IsEnabled = false;
+            btnRemoveRecording.IsEnabled = false;
+            btnPlay.IsEnabled = false;
+            btnEnterTag.IsEnabled = false;
 
             ++student.RecId;
 
@@ -238,6 +267,15 @@ namespace OralHistoryRecorder
 
             // Show the message dialog
             await messageDialog.ShowAsync();
+
+
+            // Disable Submit button
+            btnEnterTag.IsEnabled = false;
+        }
+
+        private void PlaybackSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
+        {
+            audioRecorder.AudioTimePosition = TimeSpan.FromSeconds(e.NewValue);
         }
 
         private void nameTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -300,6 +338,20 @@ namespace OralHistoryRecorder
                 + MakeDigitString((timeSinceLastStop - timePassed).Minutes, 2) + ":"
                 + MakeDigitString((timeSinceLastStop - timePassed).Seconds, 2) + ":"
                 + MakeDigitString((timeSinceLastStop - timePassed).Milliseconds, 3);
+        }
+    }
+
+    public class TimeSpanToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            var timeSpan = (TimeSpan)value;
+            return timeSpan.ToString(@"mm\:ss");
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
         }
     }
 }

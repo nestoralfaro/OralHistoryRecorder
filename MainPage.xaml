@@ -42,6 +42,8 @@
                 </Setter>
             </Style>
         </ResourceDictionary>
+
+        <!--<local:TimeSpanToStringConverter x:Key="timeSpanToStringConverter"/>-->
     </Page.Resources>
     <Grid>
         <StackPanel HorizontalAlignment="Center" >
@@ -121,27 +123,29 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Name="btnRemoveRecording" Click="btnRemoveRecording_Click" CornerRadius="5">
-                        <StackPanel Orientation="Horizontal">
-                            <SymbolIcon Name="RemoveIcon" Symbol="Delete"/>
-                            <TextBlock Name="RemoveText" Text="Remove"/>
-                        </StackPanel>
-                    </Button>
 
+                </StackPanel>
+                <Border Background="#A28448" HorizontalAlignment="Center" CornerRadius="5" Padding="5">
+                    <TextBlock x:Name="timeText" Text="00:10:00:000" HorizontalAlignment="Center" Foreground="#000008" Padding="5" FontWeight="ExtraBold" FontSize="18"/>
+                </Border>
+                <Rectangle HorizontalAlignment="Stretch" Height="1" Fill="LightGray" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="50" Margin="5">
                     <Button x:Name="btnPlay" Click="btnPlay_Click" CornerRadius="5">
                         <StackPanel Orientation="Horizontal">
                             <SymbolIcon Name="PlayIcon" Symbol="Play"/>
                             <TextBlock Name="PlayText" Text="Play"/>
                         </StackPanel>
                     </Button>
+
+                    <Button Name="btnRemoveRecording" Click="btnRemoveRecording_Click" CornerRadius="5">
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Name="RemoveIcon" Symbol="Delete"/>
+                            <TextBlock Name="RemoveText" Text="Remove"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
-                <Border Background="#A28448" HorizontalAlignment="Center" CornerRadius="5" Padding="5">
-                    <TextBlock x:Name="timeText" Text="00:10:00:000" HorizontalAlignment="Center" Foreground="#000008" Padding="5" FontWeight="ExtraBold" FontSize="18"/>
-                    
-                </Border>
-
-                <Rectangle HorizontalAlignment="Stretch" Height="1" Fill="LightGray" />
-
+                <Slider Name="PlaybackSlider" ValueChanged="PlaybackSlider_ValueChanged" Minimum="0" Margin="5,0,5,0"/>
+                <TextBlock x:Name="CurrentPositionTextBlock" HorizontalAlignment="Center" Text="00:00"/>
                 <Button Name="btnEnterTag" Click="btnEnterTag_Click" HorizontalAlignment="Center" CornerRadius="5">Submit</Button>
             </StackPanel>
         </StackPanel>
