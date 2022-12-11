@@ -88,15 +88,17 @@
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="30">
                     <TextBlock TextWrapping="Wrap" Text="Enter Decade"/>
-                    <ComboBox x:Name="ComboBox1"
+                    <ComboBox x:Name="decadeComboBox"
                             Height="32"
                             Width="150"
                             BorderThickness="1"
                             BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                            SelectionChanged="ComboBox1_SelectionChanged">
-                        <ComboBoxItem Content="1940s" />
-                        <ComboBoxItem Content="1950s" />
-                        <ComboBoxItem Content="1960s" />
+                            SelectionChanged="decadeComboBox_SelectionChanged"
+                            SelectedIndex="0"
+                              >
+                        <ComboBoxItem Content="1940"/>
+                        <ComboBoxItem Content="1950"/>
+                        <ComboBoxItem Content="1960"/>
                     </ComboBox>
 
                 </StackPanel>
