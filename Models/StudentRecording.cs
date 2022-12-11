@@ -11,12 +11,19 @@ namespace OralHistoryRecorder.Models
 {
     public class StudentRecording
     {
-        public int RecId;
-        public String Title;
-        public String tag;
-        public float duration;
-        public string date;
+        public int RecId { get; set; }
+        public String Title { get; set; }
+        public String tag { get; set; }
+
+        public float duration { get; set; }
+        public string date { get; set; }
+        public StudentRecording()
+        {
+            tag = "";
+            RecId = 0;
+        }
     }
+
 
     public class RecordingManager
     {

@@ -1,4 +1,5 @@
 ﻿using NAudio.Wave;
+using OralHistoryRecorder.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -36,11 +37,20 @@ namespace OralHistoryRecorder
         private TimeSpan timePassed, timeSinceLastStop;
         bool isStop = false;
         bool isPaused = false;
+        StudentRecording student;
 
         public MainPage()
         {
             InitializeComponent();
             audioRecorder = new AudioRecorderLib();
+            student = new StudentRecording();
+
+            btnStartRecording.IsEnabled = false;
+            btnPauseRecording.IsEnabled = false;
+            btnRemoveRecording.IsEnabled = false;
+            btnPlay.IsEnabled = false;
+
+            btnEnterTag.IsEnabled = false;
         }
         private async void btnPauseRecording_Click(object sender, RoutedEventArgs e)
         {
@@ -50,7 +60,8 @@ namespace OralHistoryRecorder
                 isPaused = true;
                 demoDispatcher.Stop();
                 dispatcherTimer.Stop();
-                btnPauseRecording.Content = "Resume";
+                PauseText.Text = "Resume";
+                PauseIcon.Symbol = Symbol.Back;
                 await audioRecorder.PauseRecording();
             } else
             {
@@ -58,7 +69,8 @@ namespace OralHistoryRecorder
                 isPaused = false;
                 demoDispatcher.Start();
                 dispatcherTimer.Start();
-                btnPauseRecording.Content = "Pause";
+                PauseText.Text = "Pause";
+                PauseIcon.Symbol = Symbol.Pause;
                 await audioRecorder.ResumeRecording();
             }
 
@@ -72,7 +84,8 @@ namespace OralHistoryRecorder
                 isStop = true;
                 startedTime = DateTime.Now;
                 DispatcherTimerSetup();
-                btnStartRecording.Content = "Stop";
+                RecordingIcon.Symbol = Symbol.Stop;
+                RecordingText.Text = "Stop"; 
                 await audioRecorder.Record();
             }
             else
@@ -81,7 +94,8 @@ namespace OralHistoryRecorder
                 dispatcherTimer.Stop();
                 demoDispatcher.Stop();
                 timeText.Text = "00:10:00:000";
-                btnStartRecording.Content = "Start";
+                RecordingIcon.Symbol = Symbol.Microphone;
+                RecordingText.Text = "Start"; 
                 await audioRecorder.StopRecording();
             }
 
@@ -106,7 +120,7 @@ namespace OralHistoryRecorder
             demoDispatcher.Start();
         }
 
-        private void enterTagButton_Click(object sender, RoutedEventArgs e)
+        private void btnEnterTag_Click(object sender, RoutedEventArgs e)
         {
             var dir = ApplicationData.Current.LocalFolder.Path;
             Debug.WriteLine("the dir where it is being stored");
@@ -116,6 +130,15 @@ namespace OralHistoryRecorder
             TimeSpan duration = tfile.Properties.Duration;
             Debug.WriteLine("Title: {0}, duration: {1}", title, duration);
 
+
+            //Restore to default
+            nameTextBox.Text = String.Empty;
+            enteredCustomTag.Text = String.Empty;
+            ChapelTag.IsChecked = false;
+            DormTag.IsChecked = false;
+            btnEnterTag.IsEnabled = false;
+
+
             // change title in the file
             tfile.Tag.Title = "done with taglibsharp";
             tfile.Save();
@@ -124,15 +147,27 @@ namespace OralHistoryRecorder
         private void Tag_Checked(object sender, RoutedEventArgs e)
         {
             ToggleButton toggleButton = (ToggleButton)sender;
-            toggleButton.Background = new SolidColorBrush(Colors.Black);
-            toggleButton.Foreground = new SolidColorBrush(Colors.Gold);
+            string tag = toggleButton.Name.Replace("Tag", "");
+            if (!student.tag.Contains(tag))
+            {
+                student.tag += toggleButton.Name.Replace("Tag", "") + ',';
+            }
+            Debug.WriteLine("added Tag");
+            Debug.WriteLine(student.tag);
         }
 
         private void Tag_Unchecked(object sender, RoutedEventArgs e)
         {
             ToggleButton toggleButton = (ToggleButton)sender;
-            toggleButton.Background = new SolidColorBrush(Colors.White);
-            toggleButton.Foreground = new SolidColorBrush(Colors.Black);
+            string tag = toggleButton.Name.Replace("Tag", "");
+
+            if (student.tag.Contains(tag))
+            {
+                student.tag = student.tag.Replace(tag + ',', "");
+            }
+
+            Debug.WriteLine("removed Tag");
+            Debug.WriteLine(student.tag);
         }
 
 
@@ -151,6 +186,27 @@ namespace OralHistoryRecorder
 
         }
 
+        private void nameTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (nameTextBox.Text == "")
+            {
+                btnStartRecording.IsEnabled = false;
+                btnPauseRecording.IsEnabled = false;
+                btnRemoveRecording.IsEnabled = false;
+                btnPlay.IsEnabled = false;
+                btnEnterTag.IsEnabled = false;
+            }
+            else
+            {
+                btnStartRecording.IsEnabled = true;
+                btnPauseRecording.IsEnabled = true;
+                btnRemoveRecording.IsEnabled = true;
+                btnPlay.IsEnabled = true;
+                btnEnterTag.IsEnabled = true;
+
+                student.Title = nameTextBox.Text + student.RecId;
+            } 
+        }
 
         private string MakeDigitString(int number, int count)
         {

@@ -23,8 +23,7 @@
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="FontSize" Value="16"/>
             </Style>
-            
-            
+
             <Style x:Key="MyToggleButtonStyle" TargetType="ToggleButton">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -42,84 +41,109 @@
                     </Setter.Value>
                 </Setter>
             </Style>
-
-            
-            
         </ResourceDictionary>
     </Page.Resources>
     <Grid>
-        <StackPanel>
-            <StackPanel Margin="10" HorizontalAlignment="Center">
+        <StackPanel HorizontalAlignment="Center" >
+            <StackPanel Margin="10" HorizontalAlignment="Center" >
                 <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Oral History Booth" Margin="10"/>
                 <Image Width="Auto" Height="100" Source="/Assets/HUBisonLogo.png"/>
             </StackPanel>
-
-
-
-
-
-
-
-
-
-
-
-            <StackPanel Margin="24">
-                <TextBox x:Name="name" PlaceholderText="Enter your name" Style="{StaticResource TextBoxStyle}"/>
-                <Button Name="btnStartRecording" Content="Start" Click="btnStartRecording_Click"/>
-                <Button Name="btnPauseRecording" Content="Pause" Click="btnPauseRecording_Click"/>
-                <Button Name="btnRemoveRecording" Content="Remove" Click="btnRemoveRecording_Click"/>
-                <Button x:Name="btnPlay" Click="btnPlay_Click" Content="Play"/>
-                <TextBlock x:Name="timeText" Text="00:10:00:000" Height="41" Width="187"/>
-                <TextBlock x:Name="TextBlockTimeRemaining"/>
-                <TextBlock TextWrapping="Wrap" Text="Enter Custom Tag"/>
-                <!--Does not have a handler for catching the entered text-->
-                <TextBox x:Name="enteredTitle" TextWrapping="Wrap" PlaceholderText="Custom Tag" Text=""/>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="20">
+            <StackPanel Margin="24" Spacing="10">
+                <!--Metadata-->
+                <TextBox x:Name="nameTextBox" PlaceholderText="Enter your name" Style="{StaticResource TextBoxStyle}" TextChanged="nameTextBox_TextChanged"/>
+                <!--Tags-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" Spacing="50">
                     <ToggleButton x:Name="ChapelTag"
-                          HorizontalAlignment="Center" VerticalAlignment="Center"
-                          IsChecked="{Binding IsChecked, Mode=TwoWay}"
-                          Checked="Tag_Checked"
-                          CornerRadius="8"
-                          BorderThickness="1"
-                          Unchecked="Tag_Unchecked"
-                      >
+                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                              IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                              Checked="Tag_Checked"
+                              CornerRadius="8"
+                              BorderThickness="1"
+                              Unchecked="Tag_Unchecked"
+                          >
                         <StackPanel Orientation="Horizontal">
-                        <SymbolIcon Symbol="People"/>
-                        <TextBlock Text="Chapel"/>
+                            <SymbolIcon Symbol="People"/>
+                            <TextBlock Text="Chapel"/>
                         </StackPanel>
                     </ToggleButton>
 
                     <ToggleButton x:Name="DormTag"
-                          HorizontalAlignment="Center" VerticalAlignment="Center"
-                          IsChecked="{Binding IsChecked, Mode=TwoWay}"
-                          Checked="Tag_Checked"
-                          CornerRadius="8"
-                          BorderThickness="1"
-                          Unchecked="Tag_Unchecked"
-                      >
+                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                              IsChecked="{Binding IsChecked, Mode=TwoWay}"
+                              Checked="Tag_Checked"
+                              CornerRadius="8"
+                              BorderThickness="1"
+                              Unchecked="Tag_Unchecked"
+                          >
                         <StackPanel Orientation="Horizontal">
-                        <SymbolIcon Symbol="Home"/>
-                        <TextBlock Text="Dorm Life"/>
+                            <SymbolIcon Symbol="Home"/>
+                            <TextBlock Text="Dorm Life"/>
                         </StackPanel>
                     </ToggleButton>
+                    <StackPanel>
+                        <TextBlock TextWrapping="Wrap" Text="Enter Custom Tag"/>
+                        <TextBox x:Name="enteredCustomTag" TextWrapping="Wrap" PlaceholderText="Custom Tag"/>
+                    </StackPanel>
                 </StackPanel>
-                <TextBlock TextWrapping="Wrap" Text="Enter Decade"/>
-                <ComboBox x:Name="ComboBox1"
-                    Height="32"
-                    Width="150"
-                    BorderThickness="1"
-                    BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                    SelectionChanged="ComboBox1_SelectionChanged">
-                    <ComboBoxItem Content="1940s" />
-                    <ComboBoxItem Content="1950s" />
-                    <ComboBoxItem Content="1960s" />
-                </ComboBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="30">
+                    <TextBlock TextWrapping="Wrap" Text="Enter Decade"/>
+                    <ComboBox x:Name="ComboBox1"
+                            Height="32"
+                            Width="150"
+                            BorderThickness="1"
+                            BorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                            SelectionChanged="ComboBox1_SelectionChanged">
+                        <ComboBoxItem Content="1940s" />
+                        <ComboBoxItem Content="1950s" />
+                        <ComboBoxItem Content="1960s" />
+                    </ComboBox>
 
-                <Button Name="enterTagButton" Click="enterTagButton_Click">Submit</Button>
+                </StackPanel>
+
+                <Rectangle HorizontalAlignment="Stretch" Height="1" Fill="LightGray" />
+
+                <!--Recording Controllers-->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="50" Margin="5">
+                    <Button Name="btnStartRecording" Click="btnStartRecording_Click" CornerRadius="5" FontWeight="Bold">
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Name="RecordingIcon" Symbol="Microphone"/>
+                            <TextBlock Name="RecordingText" Text="Start" />
+                        </StackPanel>
+                    </Button>
+
+                    <Button Name="btnPauseRecording" Click="btnPauseRecording_Click" CornerRadius="5">
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Name="PauseIcon" Symbol="Pause"/>
+                            <TextBlock Name="PauseText" Text="Pause"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button Name="btnRemoveRecording" Click="btnRemoveRecording_Click" CornerRadius="5">
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Name="RemoveIcon" Symbol="Delete"/>
+                            <TextBlock Name="RemoveText" Text="Remove"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="btnPlay" Click="btnPlay_Click" CornerRadius="5">
+                        <StackPanel Orientation="Horizontal">
+                            <SymbolIcon Name="PlayIcon" Symbol="Play"/>
+                            <TextBlock Name="PlayText" Text="Play"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <Border Background="#A28448" HorizontalAlignment="Center" CornerRadius="5" Padding="5">
+                    <TextBlock x:Name="timeText" Text="00:10:00:000" HorizontalAlignment="Center" Foreground="#000008" Padding="5" FontWeight="ExtraBold" FontSize="18"/>
+                    
+                </Border>
+
+                <Rectangle HorizontalAlignment="Stretch" Height="1" Fill="LightGray" />
+
+                <Button Name="btnEnterTag" Click="btnEnterTag_Click" HorizontalAlignment="Center" CornerRadius="5">Submit</Button>
             </StackPanel>
         </StackPanel>
-</Grid>
+    </Grid>
 
 
 </Page>
