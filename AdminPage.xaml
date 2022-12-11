@@ -16,18 +16,19 @@
         </Grid.RowDefinitions>
 
         <GridView ItemsSource="{x:Bind studentRecordingList}">
-            <GridView.ItemTemplate>
+            <GridView.ItemTemplate Foreground="LightGray">
                 <DataTemplate x:DataType="data:StudentRecording">
                     <StackPanel>
                         <TextBlock Text="{x:Bind Title}"/>
                         <TextBlock Text="{x:Bind tag}"/>
                         <TextBlock Text="{x:Bind duration}"/>
-                        <TextBlock Text="{x:Bind date}"/>
+                        <TextBlock Text="{x:Bind decade}"/>
                     </StackPanel>
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
 
-        <TextBlock Grid.Row="1" Name="recordingsResult" FontSize="24" Foreground="LightGray" Margin="0,20,0,0"/>
+        <TextBlock Grid.Row="1" Name="recordingsResult" FontSize="24" 
+                   Foreground="LightGray" Margin="0,20,0,0"/>
     </Grid>
 </Page>

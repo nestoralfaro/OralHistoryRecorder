@@ -16,7 +16,7 @@ namespace OralHistoryRecorder.Models
         public String tag { get; set; }
 
         public float duration { get; set; }
-        public string date { get; set; }
+        public string decade { get; set; }
         public StudentRecording()
         {
             tag = "";
@@ -27,7 +27,7 @@ namespace OralHistoryRecorder.Models
 
     public class RecordingManager
     {
-        public static List<StudentRecording> retrieveBooks()
+        public static List<StudentRecording> retrieveRecordings()
         {
             var stuRecordings =  new List<StudentRecording>();
             
@@ -37,7 +37,7 @@ namespace OralHistoryRecorder.Models
                 Title = "Dorm Adventures", 
                 tag = "Dorm Life", 
                 duration = 4.56f,
-                date = "12/09/2022"});
+                decade = "12/09/2022"});
             
             stuRecordings.Add(new StudentRecording
             {
@@ -45,7 +45,7 @@ namespace OralHistoryRecorder.Models
                 Title = "Clubs are great!",
                 tag = "Club Stuff",
                 duration = 7.34f,
-                date = "10/09/2022"
+                decade = "10/09/2022"
             });
 
             return stuRecordings;
