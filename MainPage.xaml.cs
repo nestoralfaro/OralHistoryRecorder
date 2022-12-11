@@ -35,7 +35,7 @@ namespace OralHistoryRecorder
         AudioRecorderLib audioRecorder;
 
         private DispatcherTimer dispatcherTimer, demoDispatcher;
-        private DateTime startedTime, frozenTime;
+        private DateTime startedTime, stopTime;
         private TimeSpan timePassed, timeSinceLastStop;
         bool isStop = false;
         bool isPaused = false;
@@ -58,39 +58,21 @@ namespace OralHistoryRecorder
         {
             if (isPaused == false)
             {
-                // Should pause
+                // Pause
                 isPaused = true;
                 demoDispatcher.Stop();
                 dispatcherTimer.Stop();
                 PauseText.Text = "Resume";
                 PauseIcon.Symbol = Symbol.Back;
-
-                //timePassed = timeSinceLastStop - timePassed;
-
-                Debug.WriteLine("thou shall pause time now");
-                Debug.WriteLine(timePassed);
-                Debug.WriteLine(timeSinceLastStop);
-                Debug.WriteLine(DateTime.Now);
-                Debug.WriteLine(startedTime);
-
-                //demoDispatcher.Tick -= DemoDispatcher_Tick;
-
+                stopTime = DateTime.Now;
                 await audioRecorder.PauseRecording();
             } else
             {
-
-                //demoDispatcher.Tick += DemoDispatcher_Tick;
-                // Should resume
+                // Resume
                 isPaused = false;
                 demoDispatcher.Start();
                 dispatcherTimer.Start();
-
-                Debug.WriteLine("thou shall resume time now");
-                Debug.WriteLine(timePassed);
-                Debug.WriteLine(timeSinceLastStop);
-                Debug.WriteLine(DateTime.Now);
-                Debug.WriteLine(startedTime);
-
+                startedTime += (DateTime.Now - stopTime);
                 PauseText.Text = "Pause";
                 PauseIcon.Symbol = Symbol.Pause;
                 await audioRecorder.ResumeRecording();
@@ -107,10 +89,7 @@ namespace OralHistoryRecorder
                 DispatcherTimerSetup();
                 RecordingIcon.Symbol = Symbol.Stop;
                 RecordingText.Text = "Stop";
-
-
                 btnPauseRecording.IsEnabled = true;
-
                 await audioRecorder.Record();
             }
             else
@@ -126,7 +105,6 @@ namespace OralHistoryRecorder
                 btnPlay.IsEnabled = true;
                 btnEnterTag.IsEnabled = true;
                 btnPauseRecording.IsEnabled = false;
-
                 await audioRecorder.StopRecording();
 
             }
