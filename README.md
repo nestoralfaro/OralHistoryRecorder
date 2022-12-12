@@ -28,4 +28,6 @@ Percentage of work performed by each teammate:
 - Nestor Alfaro: 50%
 - Andres Gomez: 50%
 
+## Demo
+
 ![ezgif com-gif-maker](https://user-images.githubusercontent.com/103458191/206967605-19629ea0-a1a8-4750-8c0d-0307d5bce828.gif)
