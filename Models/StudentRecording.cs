@@ -31,24 +31,8 @@ namespace OralHistoryRecorder.Models
         public async static Task<List<StudentRecording>> retrieveRecordings()
         {
             var stuRecordings =  new List<StudentRecording>();
-            
-            //Adding a new recording into the List
-            stuRecordings.Add(new StudentRecording {
-                RecId = 1, 
-                Title = "Dorm Adventures", 
-                tag = "Dorm Life", 
-                duration = new TimeSpan(10),
-                decade = "12/09/2022"});
-            
-            stuRecordings.Add(new StudentRecording
-            {
-                RecId = 1,
-                Title = "Clubs are great!",
-                tag = "Club Stuff",
-                duration = new TimeSpan(7),
-                decade = "10/09/2022"
-            });
 
+            //  Opening loca folder to read all files saved inside.
             var recFolder = await StorageFolder.GetFolderFromPathAsync(ApplicationData.Current.LocalFolder.Path);
 
             var files = await recFolder.GetFilesAsync();
@@ -56,6 +40,7 @@ namespace OralHistoryRecorder.Models
 
             int id = 0;
 
+            //  Looping through each of the files to read all mp3s saved inside local folder
             foreach (var file in files)
             {
 
@@ -64,6 +49,8 @@ namespace OralHistoryRecorder.Models
 
                 var tempFile = TagLib.File.Create(file.Path);
 
+                //  Assigning all properties for a student recording to be displayed in the observable
+                //  collection in the administrator's view.
                 stuRecordings.Add(new StudentRecording { RecId = id, 
                                                          Title = String.IsNullOrEmpty(tempFile.Tag.Title) ? "something" : tempFile.Tag.Title,
                                                          tag = String.IsNullOrEmpty(tempFile.Tag.Comment) ? "something" : tempFile.Tag.Comment,
@@ -73,7 +60,7 @@ namespace OralHistoryRecorder.Models
                 id++;   
             }
 
-
+            //Returning the list of mp3 files representing the students' recordings.
             return stuRecordings;
         }
     }

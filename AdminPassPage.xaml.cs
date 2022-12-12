@@ -50,12 +50,15 @@ namespace OralHistoryRecorder
             createPassInst.Visibility = Visibility.Visible;
             setUpButton.Visibility= Visibility.Visible;
             setUpButton.Focus(FocusState.Programmatic);
+
+
         }
 
         private async void setUpButton_Click(object sender, RoutedEventArgs e)
         {
             createPassInst.Visibility = Visibility.Collapsed;
             setUpButton.Visibility = Visibility.Collapsed;
+
 
             if(usernameTextBox.Text != null || adminPass.Password != null)
             {

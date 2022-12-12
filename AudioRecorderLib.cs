@@ -24,7 +24,8 @@ namespace OralHistoryRecorder
         private string DEFAULT_AUDIO_FILENAME = "NewRecording.mp3";
         public string audioFileName { get; set; }
         private string _fileName { get; set; }
-        private MediaPlayer playbackMediaElement;
+
+        private MediaPlayer playbackMediaElement = new MediaPlayer();
 
         public TimeSpan AudioTimePosition
         {
@@ -107,6 +108,7 @@ namespace OralHistoryRecorder
             playbackMediaElement.SetSource(_memoryBuffer, "MP3");
             playbackMediaElement.Play();
         }
+
 
         public async Task PlayFromDisk(CoreDispatcher dispatcher)
         {
