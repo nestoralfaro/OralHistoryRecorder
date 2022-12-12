@@ -101,7 +101,6 @@ namespace OralHistoryRecorder
                 PauseIcon.Symbol = Symbol.Pause;
                 await audioRecorder.ResumeRecording();
             }
-
         }
 
         private async void btnStartRecording_Click(object sender, RoutedEventArgs e)
@@ -176,7 +175,7 @@ namespace OralHistoryRecorder
             audioRecordingTimer.Start();
         }
 
-        private void btnEnterTag_Click(object sender, RoutedEventArgs e)
+        private async void btnEnterTag_Click(object sender, RoutedEventArgs e)
         {
             // Create TagLib instance
             var dir = ApplicationData.Current.LocalFolder.Path;
@@ -184,6 +183,9 @@ namespace OralHistoryRecorder
 
             // Add title based on the name provided
             tfile.Tag.Title = audioRecorder.audioFileName.Replace(".mp3", "");
+
+            // Add the fact that the person is/was a Harding Student in Subtitle 
+            tfile.Tag.Subtitle = (bool)HardingStudentCheck.IsChecked ? "Harding Student" : "Not a Harding Student";
 
             ComboBoxItem selectedItem = decadeComboBox.SelectedItem as ComboBoxItem;
             string selectedOption = selectedItem.Content.ToString();
@@ -196,12 +198,21 @@ namespace OralHistoryRecorder
             tfile.Tag.Comment += (bool)ClubTag.IsChecked ? "Club," : "";
             tfile.Tag.Comment += String.IsNullOrEmpty(enteredCustomTag.Text) ? "" : (enteredCustomTag.Text + ",");
 
+
             //Restore to default
             RestoreToDefault();
             btnStartRecording.IsEnabled = true;
 
             // Save files with the Title, Year, and Comment (tags) modified
             tfile.Save();
+
+            ContentDialog successfulSubmissionDialog = new ContentDialog
+            {
+                Title = "Successful Submission",
+                Content = "Thanks for your wonderful story. It was successfully submitted.",
+                CloseButtonText = "Ok",
+            };
+            await successfulSubmissionDialog.ShowAsync();
         }
 
         // While it works, it is not being used at the moment. However, is being kept for future development.
@@ -246,8 +257,14 @@ namespace OralHistoryRecorder
                 audioRecorder.RemoveAudioFile();
 
                 // Show a message indicating that the file with the provided name has been successfully removed
-                var messageDialog = new MessageDialog($"{Regex.Replace(audioRecorder.audioFileName, @"\d*\.mp3", "")} was successfully removed.");
-                await messageDialog.ShowAsync();
+                ContentDialog removedFileDialog = new ContentDialog
+                {
+                    Title = $"Removed {Regex.Replace(audioRecorder.audioFileName, @"\d*\.mp3", "")}",
+                    Content = $"{Regex.Replace(audioRecorder.audioFileName, @"\d*\.mp3", "")} has been removed.",
+                    CloseButtonText = "Ok",
+                };
+                await removedFileDialog.ShowAsync();
+
                 btnRemoveRecording.IsEnabled = false;
                 btnPlay.IsEnabled = false;
                 PauseText.Text = "Pause";
