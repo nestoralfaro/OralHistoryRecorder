@@ -28,9 +28,19 @@ namespace OralHistoryRecorder
             this.InitializeComponent();
         }
 
-        private void declineBtn_Click(object sender, RoutedEventArgs e)
+        private async void declineBtn_Click(object sender, RoutedEventArgs e)
         {
-            CoreApplication.Exit();
+
+            ContentDialog userCreated = new ContentDialog
+            {
+                Title = "Agreement Error",
+                Content = "To proceed you must agree to the stament presented.",
+                CloseButtonText = "OK"
+            };
+
+            await userCreated.ShowAsync();
+
+            this.Frame.Navigate(typeof(UserSelectionPage));
         }
 
         private void agreeBtn_Click(object sender, RoutedEventArgs e)

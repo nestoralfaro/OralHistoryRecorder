@@ -60,7 +60,7 @@ namespace OralHistoryRecorder
             setUpButton.Visibility = Visibility.Collapsed;
 
 
-            if(usernameTextBox.Text != null || adminPass.Password != null)
+            if(usernameTextBox.Text != "" && adminPass.Password != "")
             {
                 users.Add(new UserTemplate { username = usernameTextBox.Text, password = adminPass.Password });
             
@@ -77,7 +77,7 @@ namespace OralHistoryRecorder
             {
                 ContentDialog creationErr = new ContentDialog
                 {
-                    Title = "Creation Error",
+                    Title = "Error",
                     Content = "You must have a username or password. Try again.",
                     CloseButtonText = "OK"
                 };
