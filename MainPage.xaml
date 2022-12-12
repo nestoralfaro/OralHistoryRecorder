@@ -42,8 +42,6 @@
                 </Setter>
             </Style>
         </ResourceDictionary>
-
-        <!--<local:TimeSpanToStringConverter x:Key="timeSpanToStringConverter"/>-->
     </Page.Resources>
     <Grid>
         <StackPanel HorizontalAlignment="Center" >
@@ -53,7 +51,25 @@
             </StackPanel>
             <StackPanel Margin="24" Spacing="10">
                 <!--Metadata-->
-                <TextBox x:Name="nameTextBox" PlaceholderText="Enter your name" Style="{StaticResource TextBoxStyle}" TextChanged="nameTextBox_TextChanged"/>
+                <StackPanel>
+                    <TextBox x:Name="nameTextBox" HorizontalAlignment="Stretch" PlaceholderText="Enter your name" Style="{StaticResource TextBoxStyle}" TextChanged="nameTextBox_TextChanged"/>
+                    <ToggleButton
+                              x:Name="HardingStudentCheck"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Center"
+                              IsChecked="True"
+                              Checked="HardingStudentCheck_Checked"
+                              CornerRadius="8"
+                              BorderThickness="1"
+                              Margin="0,10,0,0"
+                              Unchecked="HardingStudentCheck_Unchecked"
+                          >
+                            <StackPanel Orientation="Horizontal">
+                                <SymbolIcon Name="HardingStudentCheckIcon" Symbol="Accept"/>
+                                <TextBlock Text="Harding Student?"/>
+                            </StackPanel>
+                    </ToggleButton>
+                </StackPanel>
                 <!--Tags-->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5" Spacing="50">
                     <ToggleButton x:Name="ChapelTag"

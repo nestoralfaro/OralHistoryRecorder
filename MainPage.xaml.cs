@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using TagLib.Ogg;
 using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -16,17 +17,24 @@ namespace OralHistoryRecorder
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Windows.UI.Xaml.Controls.Page
     {
         AudioRecorderLib audioRecorder;
 
-        private DispatcherTimer dispatcherTimer, demoDispatcher, audioPlayingTimer;
+        // Slider playback implemented based on:
+        // https://learn.microsoft.com/en-us/windows/uwp/audio-video-camera/play-audio-and-video-with-mediaplayer
+        // https://stackoverflow.com/questions/45001470/uwp-slider-wont-move-during-playback
+        private DispatcherTimer audioRecordingTimer, audioPlayingTimer;
+
+        // Timer implemented based on: https://stackoverflow.com/questions/42763850/c-sharp-countdown-timer-pause
         private DateTime startedTime, stopTime;
+
         private TimeSpan timePassed, timeSinceLastStop;
         bool isStop = false;
         bool isPaused = false;
         bool isPlaying = false;
         StudentRecording student;
+        private TimeSpan RECORDING_MINUTES_LIMIT = TimeSpan.FromMinutes(10);
 
         public MainPage()
         {
@@ -34,17 +42,31 @@ namespace OralHistoryRecorder
             audioRecorder = new AudioRecorderLib();
             student = new StudentRecording();
 
-            btnStartRecording.IsEnabled = false;
-            btnPauseRecording.IsEnabled = false;
-            btnRemoveRecording.IsEnabled = false;
-            btnPlay.IsEnabled = false;
-            PlaybackSlider.IsEnabled = false;
-
-            btnEnterTag.IsEnabled = false;
+            RestoreToDefault();
 
             audioPlayingTimer = new DispatcherTimer();
             audioPlayingTimer.Tick += AudioPlayingTimer_Tick;
             audioPlayingTimer.Interval = TimeSpan.FromSeconds(1);
+        }
+
+        private void RestoreToDefault()
+        {
+            // Restore controllers configuration to default, except name.
+            enteredCustomTag.Text = String.Empty;
+            btnStartRecording.IsEnabled = false;
+            btnPauseRecording.IsEnabled = false;
+            ChapelTag.IsChecked = false;
+            DormTag.IsChecked = false;
+            ClubTag.IsChecked = false;
+            PlaybackSlider.IsEnabled = false;
+            btnRemoveRecording.IsEnabled = false;
+            btnPlay.IsEnabled = false;
+            btnEnterTag.IsEnabled = false;
+            timeText.Text = RECORDING_MINUTES_LIMIT.ToString();
+            PlaybackSlider.Value = 0;
+            CurrentPositionTextBlock.Text = "00:00";
+            PlayText.Text = "Play";
+            PlayIcon.Symbol = Symbol.Play;
         }
 
         private void AudioPlayingTimer_Tick(object sender, object e)
@@ -54,6 +76,7 @@ namespace OralHistoryRecorder
                 PlaybackSlider.Value = audioRecorder.AudioTimePosition.TotalSeconds;
                 CurrentPositionTextBlock.Text = $"{MakeDigitString(audioRecorder.AudioTimePosition.Minutes, 2)}:{MakeDigitString(audioRecorder.AudioTimePosition.Seconds, 2)}";
             }
+
         }
 
         private async void btnPauseRecording_Click(object sender, RoutedEventArgs e)
@@ -62,18 +85,17 @@ namespace OralHistoryRecorder
             {
                 // Pause
                 isPaused = true;
-                demoDispatcher.Stop();
-                dispatcherTimer.Stop();
+                audioRecordingTimer.Stop();
                 PauseText.Text = "Resume";
                 PauseIcon.Symbol = Symbol.RepeatAll;
                 stopTime = DateTime.Now;
                 await audioRecorder.PauseRecording();
-            } else
+            }
+            else
             {
                 // Resume
                 isPaused = false;
-                demoDispatcher.Start();
-                dispatcherTimer.Start();
+                audioRecordingTimer.Start();
                 startedTime += (DateTime.Now - stopTime);
                 PauseText.Text = "Pause";
                 PauseIcon.Symbol = Symbol.Pause;
@@ -86,6 +108,7 @@ namespace OralHistoryRecorder
         {
             if (isStop == false)
             {
+                // Start recording
                 isStop = true;
                 startedTime = DateTime.Now;
                 DispatcherTimerSetup();
@@ -96,20 +119,25 @@ namespace OralHistoryRecorder
             }
             else
             {
+                // Stop recording
                 isStop = false;
-                dispatcherTimer.Stop();
-                demoDispatcher.Stop();
-                timeText.Text = "00:10:00:000";
+                audioRecordingTimer.Stop();
+                timeText.Text = RECORDING_MINUTES_LIMIT.ToString();
                 RecordingIcon.Symbol = Symbol.Microphone;
-                RecordingText.Text = "Start"; 
+                RecordingText.Text = "Start";
 
-                btnRemoveRecording.IsEnabled = true;
+                // Enable audio playing and removing controllers
                 btnPlay.IsEnabled = true;
+                btnRemoveRecording.IsEnabled = true;
                 PlaybackSlider.IsEnabled = true;
                 btnEnterTag.IsEnabled = true;
                 btnPauseRecording.IsEnabled = false;
                 btnEnterTag.IsEnabled = true;
                 PlaybackSlider.Maximum = timePassed.TotalSeconds;
+
+                ++student.RecId;
+                audioRecorder.audioFileName = nameTextBox.Text + student.RecId + ".mp3";
+
                 await audioRecorder.StopRecording();
             }
         }
@@ -141,61 +169,42 @@ namespace OralHistoryRecorder
 
         private void DispatcherTimerSetup()
         {
-            dispatcherTimer = new DispatcherTimer();
-            //dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 100);
-            dispatcherTimer.Start();
-
-            timeSinceLastStop = new TimeSpan(0, 0, 10, 0, 0);
-
-            timeText.Text = "00:10:00:000";
-            demoDispatcher = new DispatcherTimer();
-            demoDispatcher.Tick += DemoDispatcher_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1);
-            demoDispatcher.Start();
+            timeSinceLastStop = RECORDING_MINUTES_LIMIT;
+            timeText.Text = RECORDING_MINUTES_LIMIT.ToString();
+            audioRecordingTimer = new DispatcherTimer();
+            audioRecordingTimer.Tick += DemoDispatcher_Tick;
+            audioRecordingTimer.Start();
         }
 
         private void btnEnterTag_Click(object sender, RoutedEventArgs e)
         {
+            // Create TagLib instance
             var dir = ApplicationData.Current.LocalFolder.Path;
-            Debug.WriteLine("the dir where it is being stored");
-            Debug.WriteLine(dir);
             var tfile = TagLib.File.Create(dir + "\\" + audioRecorder.audioFileName);
-            string title = tfile.Tag.Title;
-            TimeSpan duration = tfile.Properties.Duration;
-            Debug.WriteLine("Title: {0}, duration: {1}", title, duration);
 
-            //tfile.Tag.Title = nameTextBox.Text + student.RecId;
+            // Add title based on the name provided
             tfile.Tag.Title = audioRecorder.audioFileName.Replace(".mp3", "");
 
             ComboBoxItem selectedItem = decadeComboBox.SelectedItem as ComboBoxItem;
             string selectedOption = selectedItem.Content.ToString();
-
+            // Add decade entered
             tfile.Tag.Year = UInt32.Parse(selectedOption);
-            Debug.WriteLine("this is the tag to add hopefully");
-            Debug.WriteLine(student.tag);
-            //tfile.Tag.Comment = student.tag;
+
+            // Add selected tags
             tfile.Tag.Comment = (bool)ChapelTag.IsChecked ? "Chapel," : "";
             tfile.Tag.Comment += (bool)DormTag.IsChecked ? "Dorm," : "";
             tfile.Tag.Comment += (bool)ClubTag.IsChecked ? "Club," : "";
             tfile.Tag.Comment += String.IsNullOrEmpty(enteredCustomTag.Text) ? "" : (enteredCustomTag.Text + ",");
 
             //Restore to default
-            //nameTextBox.Text = String.Empty;
-            enteredCustomTag.Text = String.Empty;
-            ChapelTag.IsChecked = false;
-            DormTag.IsChecked = false;
+            RestoreToDefault();
+            btnStartRecording.IsEnabled = true;
 
-            PlaybackSlider.IsEnabled = false;
-            btnRemoveRecording.IsEnabled = false;
-            btnPlay.IsEnabled = false;
-            btnEnterTag.IsEnabled = false;
-
-            ++student.RecId;
-
-            // change title in the file
+            // Save files with the Title, Year, and Comment (tags) modified
             tfile.Save();
         }
 
+        // While it works, it is not being used at the moment. However, is being kept for future development.
         private void Tag_Checked(object sender, RoutedEventArgs e)
         {
             ToggleButton toggleButton = (ToggleButton)sender;
@@ -206,18 +215,18 @@ namespace OralHistoryRecorder
             }
         }
 
+        // While it works, it is not being used at the moment. However, is being kept for future development.
         private void Tag_Unchecked(object sender, RoutedEventArgs e)
         {
             ToggleButton toggleButton = (ToggleButton)sender;
             string tag = toggleButton.Name.Replace("Tag", "");
-
             if (student.tag.Contains(tag))
             {
                 student.tag = student.tag.Replace(tag + ',', "");
             }
         }
 
-
+        // While it works, it is not being used at the moment. However, is being kept for future development.
         private void decadeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBoxItem selectedItem = decadeComboBox.SelectedItem as ComboBoxItem;
@@ -234,10 +243,9 @@ namespace OralHistoryRecorder
             if (command.Label == "Yes")
             {
                 // Remove the file
-                // TODO: Implement file removal logic here
                 audioRecorder.RemoveAudioFile();
 
-                // Show a message that the file was successfully removed
+                // Show a message indicating that the file with the provided name has been successfully removed
                 var messageDialog = new MessageDialog($"{Regex.Replace(audioRecorder.audioFileName, @"\d*\.mp3", "")} was successfully removed.");
                 await messageDialog.ShowAsync();
                 btnRemoveRecording.IsEnabled = false;
@@ -279,25 +287,38 @@ namespace OralHistoryRecorder
             audioRecorder.AudioTimePosition = TimeSpan.FromSeconds(e.NewValue);
         }
 
+        private void HardingStudentCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            if (HardingStudentCheckIcon != null)
+            {
+                HardingStudentCheckIcon.Symbol = Symbol.Accept;
+            }
+        }
+
+        private void HardingStudentCheck_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (HardingStudentCheckIcon != null)
+            {
+                HardingStudentCheckIcon.Symbol = Symbol.Cancel;
+            }
+        }
+
         private void nameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (nameTextBox.Text == "")
+            if (String.IsNullOrEmpty(nameTextBox.Text))
             {
-                btnStartRecording.IsEnabled = false;
-                btnPauseRecording.IsEnabled = false;
-                btnRemoveRecording.IsEnabled = false;
-                btnPlay.IsEnabled = false;
-                btnEnterTag.IsEnabled = false;
+                RestoreToDefault();
             }
             else
             {
+                RestoreToDefault();
                 btnStartRecording.IsEnabled = true;
                 student.Title = nameTextBox.Text + student.RecId;
                 audioRecorder.audioFileName = nameTextBox.Text + student.RecId + ".mp3";
- 
             } 
         }
 
+        // Taken from: https://www.youtube.com/watch?v=dKhcS-ec-p8
         private string MakeDigitString(int number, int count)
         {
             string result = "0";
@@ -324,35 +345,22 @@ namespace OralHistoryRecorder
             return result;
         }
 
-        private void DemoDispatcher_Tick(object sender, object e)
+        private async void DemoDispatcher_Tick(object sender, object e)
         {
             timePassed = DateTime.Now - startedTime;
-            Debug.WriteLine("============");
-            Debug.WriteLine("time passed from callback");
-            Debug.WriteLine(timePassed);
-            Debug.WriteLine(DateTime.Now);
-            Debug.WriteLine(startedTime);
-            Debug.WriteLine("============");
-
-
-            timeText.Text = MakeDigitString((timeSinceLastStop - timePassed).Hours, 2) + ":"
-                + MakeDigitString((timeSinceLastStop - timePassed).Minutes, 2) + ":"
-                + MakeDigitString((timeSinceLastStop - timePassed).Seconds, 2) + ":"
-                + MakeDigitString((timeSinceLastStop - timePassed).Milliseconds, 3);
-        }
-    }
-
-    public class TimeSpanToStringConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            var timeSpan = (TimeSpan)value;
-            return timeSpan.ToString(@"mm\:ss");
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
+            if (timePassed != RECORDING_MINUTES_LIMIT)
+            {
+                timeText.Text = MakeDigitString((timeSinceLastStop - timePassed).Hours, 2) + ":"
+                    + MakeDigitString((timeSinceLastStop - timePassed).Minutes, 2) + ":"
+                    + MakeDigitString((timeSinceLastStop - timePassed).Seconds, 2);
+                    // Milliseconds
+                    //+ ":"
+                    //+ MakeDigitString((timeSinceLastStop - timePassed).Milliseconds, 3);
+            }
+            else
+            {
+                await audioRecorder.StopRecording();
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.Media.Playback;
 using Windows.Media.Core;
 
+// Built with the help of this article: https://learn.microsoft.com/en-us/archive/msdn-magazine/2016/june/modern-apps-playing-with-audio-in-the-uwp
 namespace OralHistoryRecorder
 {
     public class AudioRecorderLib
@@ -23,7 +24,6 @@ namespace OralHistoryRecorder
         private string DEFAULT_AUDIO_FILENAME = "NewRecording.mp3";
         public string audioFileName { get; set; }
         private string _fileName { get; set; }
-
         private MediaPlayer playbackMediaElement;
 
         public TimeSpan AudioTimePosition
@@ -80,7 +80,6 @@ namespace OralHistoryRecorder
         private async void SaveAudioToFile()
         {
             IRandomAccessStream audioStream = _memoryBuffer.CloneStream();
-            //StorageFolder storageFolder = Package.Current.InstalledLocation;
             StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
             StorageFile storageFile = await storageFolder.CreateFileAsync(
             String.IsNullOrEmpty(audioFileName) ? DEFAULT_AUDIO_FILENAME : audioFileName, CreationCollisionOption.GenerateUniqueName);
@@ -129,7 +128,5 @@ namespace OralHistoryRecorder
         {
             playbackMediaElement.Pause();
         }
-
-
     }
 }
