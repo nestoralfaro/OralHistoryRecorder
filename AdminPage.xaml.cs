@@ -23,6 +23,7 @@ using Windows.Storage.Streams;
 using System.Text.RegularExpressions;
 using Windows.UI.Popups;
 using Windows.System;
+using OralHistoryRecorder.ViewModels;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 

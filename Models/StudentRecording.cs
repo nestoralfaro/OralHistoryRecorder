@@ -52,8 +52,8 @@ namespace OralHistoryRecorder.Models
                 //  Assigning all properties for a student recording to be displayed in the observable
                 //  collection in the administrator's view.
                 stuRecordings.Add(new StudentRecording { RecId = id, 
-                                                         Title = String.IsNullOrEmpty(tempFile.Tag.Title) ? "something" : tempFile.Tag.Title,
-                                                         tag = String.IsNullOrEmpty(tempFile.Tag.Comment) ? "something" : tempFile.Tag.Comment,
+                                                         Title = /*String.IsNullOrEmpty(tempFile.Tag.Title) ? "something" : */tempFile.Tag.Title,
+                                                         tag = /*String.IsNullOrEmpty(tempFile.Tag.Comment) ? "something" : */tempFile.Tag.Comment,
                                                          duration = tempFile.Properties.Duration, 
                                                          decade = tempFile.Tag.Year.ToString() });
 

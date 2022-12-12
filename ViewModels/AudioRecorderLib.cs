@@ -14,7 +14,7 @@ using Windows.Media.Playback;
 using Windows.Media.Core;
 
 // Built with the help of this article: https://learn.microsoft.com/en-us/archive/msdn-magazine/2016/june/modern-apps-playing-with-audio-in-the-uwp
-namespace OralHistoryRecorder
+namespace OralHistoryRecorder.ViewModels
 {
     public class AudioRecorderLib
     {
