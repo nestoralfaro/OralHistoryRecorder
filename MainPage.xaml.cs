@@ -116,6 +116,7 @@ namespace OralHistoryRecorder
                 btnPauseRecording.IsEnabled = true;
                 await audioRecorder.Record();
             }
+
             else
             {
                 // Stop recording
@@ -124,6 +125,9 @@ namespace OralHistoryRecorder
                 timeText.Text = RECORDING_MINUTES_LIMIT.ToString();
                 RecordingIcon.Symbol = Symbol.Microphone;
                 RecordingText.Text = "Start";
+
+                PauseIcon.Symbol = Symbol.Pause;
+                PauseText.Text = "Pause";
 
                 // Enable audio playing and removing controllers
                 btnPlay.IsEnabled = true;
